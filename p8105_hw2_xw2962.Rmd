@@ -8,6 +8,7 @@ output: github_document
 ```{r setup}
 library(tidyverse)
 library(haven)
+library(readxl)
 ```
 
 ## Problem One 
@@ -100,5 +101,83 @@ Dataset "unemployment_df" has 3 variables: `r colnames(unemployment_df)`. In thi
 
 The joining dataset "pols_snp_unemployment" has 13 variables: `r colnames(pols_snp_unemployment)`. In this dataset, there are `r nrow(pols_snp_unemployment)` rows. And there are `r ncol(pols_snp_unemployment)` columns. Here we consider variables "gov_gop", "sen_gop", "rep_gop", "gov_dem", "sen_dem", "rep_dem", "president","close" and "unemployment_num" to be important for analysis.
 
+## Problem Two
 
+#### Import, Clean, and Organize the Data for Mr. Trash Wheel
+```{r}
+mr_trash_wheel_df=
+  read_excel("./Trash Wheel Data.xlsx",range="A2:N549") |> 
+# Specify the sheet in the Excel file and to omit non-data entries using arguments in read_excel
+  janitor::clean_names() |>  
+# Use reasonable variable names
+  drop_na() |> 
+# Omit rows that do not include dumpster-specific data
+  mutate(
+    homes_powered = ((weight_tons*500)/30
+    )) |>
+# Update the data to include a new homes_powered variable based on the noted calculation
+  mutate(trash_wheel_name="mr_trash_wheel") |>
+  relocate(trash_wheel_name)
+# Add a variable for Clear Identification 
+mr_trash_wheel_df
+```
+
+#### Import, Clean, and Organize the Data for Professor Trash Wheel
+
+```{r}
+professor_trash_wheel_df=
+  read_excel("./Trash Wheel Data.xlsx",2,range="A2:M96") |> 
+# Specify the sheet in the Excel file and to omit non-data entries using arguments in read_excel
+  janitor::clean_names() |>  
+# Use reasonable variable names
+  drop_na() |> 
+# Omit rows that do not include dumpster-specific data
+  mutate(
+    homes_powered = ((weight_tons*500)/30
+    )) |> 
+# Update the data to include a new homes_powered variable based on the noted calculation
+  mutate(trash_wheel_name="professor_trash_wheel") |>
+  relocate(trash_wheel_name) |> 
+# Add a variable for Clear Identification
+  mutate(year=as.character("year"))
+professor_trash_wheel_df
+```
+
+#### Import, Clean, and Organize the Data for Gwynnda Trash Wheel
+
+```{r}
+Gwynnda_trash_wheel_df=
+  read_excel("./Trash Wheel Data.xlsx",4,range="A2:K108") |> 
+# Specify the sheet in the Excel file and to omit non-data entries using arguments in read_excel
+  janitor::clean_names() |>  
+# Use reasonable variable names
+  drop_na() |> 
+# Omit rows that do not include dumpster-specific data
+  mutate(
+    homes_powered = ((weight_tons*500)/30
+    )) |> 
+# Update the data to include a new homes_powered variable based on the noted calculation
+  mutate(trash_wheel_name="Gwynnda_trash_wheel") |>
+  relocate(trash_wheel_name)
+# Add a variable for Clear Identification
+Gwynnda_trash_wheel_df
+```
+
+#### Combine these with the Mr. Trash Wheel Dataset to Create Single  Tidy Dataset
+
+```{r}
+mr_professor_Gwynnda=
+  left_join(mr_trash_wheel_df,professor_trash_wheel_df,Gwynnda_trash_wheel_df,by=c("trash_wheel_name","month","dumpster","year","date","weight_tons","volume_cubic_yards","plastic_bottles","polystyrene","cigarette_butts","glass_bottles","grocery_bags","chip_bags","homes_powered"))
+mr_professor_Gwynnda
+```
+
+#### Description
+
+Dataset "mr_professor_Gwynnda" has 15 variables: `r colnames(mr_professor_Gwynnda)`. In this dataset, there are `r nrow(mr_professor_Gwynnda)` rows or observations. And there are `r ncol(mr_professor_Gwynnda)` columns or variables. 
+
+Here, we consider "weight_tons","volume_cubic_yards" and "homes_powered" to be key variables. The variable "weight_tons" has mean `r mean(mr_professor_Gwynnda$weight_tons)` and standard deviation `r sd(mr_professor_Gwynnda$weight_tons)`. The variable "volume_cubic_yards" has mean `r mean(mr_professor_Gwynnda$volume_cubic_yards)` and standard deviation `r sd(mr_professor_Gwynnda$volume_cubic_yards)`. The variable "homes_powered" has mean `r mean(mr_professor_Gwynnda$homes_powered)` and standard deviation `r sd(mr_professor_Gwynnda$homes_powered)`. 
+
+The total weight of trash collected by Professor Trash Wheel is `r sum(professor_trash_wheel_df$weight_tons)`. 
+
+The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(Gwynnda_trash_wheel_df$cigerette_butts)`.  
 
