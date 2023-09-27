@@ -89,7 +89,7 @@ unemployment_df =
    ) |>
 # Use pivot_longer function to switch from “wide” to “long” format;
   mutate(year=as.character("year"))
-# mutate year from dbl to character 
+# Mutate year from dbl to character 
 unemployment_df
 ```
 
@@ -102,6 +102,7 @@ pols_snp
 # Join the datasets by merging snp into pols
 pols_snp_unemployment=
   left_join(pols_snp,unemployment_df,by = "year","month")
+# Join unemployment_df to the result dataset from above
 pols_snp_unemployment
 ```
 
@@ -132,7 +133,7 @@ mr_trash_wheel_df=
 # Update the data to include a new homes_powered variable based on the noted calculation
   mutate(trash_wheel_name="mr_trash_wheel") |>
   relocate(trash_wheel_name)
-# Add a variable for Clear Identification 
+# Add a variable for clear identification 
 mr_trash_wheel_df
 ```
 
@@ -152,7 +153,7 @@ professor_trash_wheel_df=
 # Update the data to include a new homes_powered variable based on the noted calculation
   mutate(trash_wheel_name="professor_trash_wheel") |>
   relocate(trash_wheel_name) |> 
-# Add a variable for Clear Identification
+# Add a variable for clear identification
   mutate(year=as.character("year"))
 professor_trash_wheel_df
 ```
@@ -173,10 +174,11 @@ Gwynnda_trash_wheel_df=
 # Update the data to include a new homes_powered variable based on the noted calculation
   mutate(trash_wheel_name="Gwynnda_trash_wheel") |>
   relocate(trash_wheel_name)
-# Add a variable for Clear Identification
+# Add a variable for clear identification
 Gwynnda_trash_wheel_df
 Gwynnda_trash_wheel_df_july=filter(Gwynnda_trash_wheel_df,month=="July" )
 Gwynnda_trash_wheel_df_july
+# Filter out the Gwynnda_trash_wheel data in july 
 ```
 
 #### Combine these with the Mr. Trash Wheel Dataset to Create Single  Tidy Dataset
