@@ -173,6 +173,8 @@ Gwynnda_trash_wheel_df=
   relocate(trash_wheel_name)
 # Add a variable for Clear Identification
 Gwynnda_trash_wheel_df
+Gwynnda_trash_wheel_df_july=filter(Gwynnda_trash_wheel_df,month=="July" )
+Gwynnda_trash_wheel_df_july
 ```
 
 #### Combine these with the Mr. Trash Wheel Dataset to Create Single  Tidy Dataset
@@ -191,7 +193,7 @@ Here, we consider "weight_tons","volume_cubic_yards" and "homes_powered" to be k
 
 The total weight of trash collected by Professor Trash Wheel is `r sum(professor_trash_wheel_df$weight_tons)`. 
 
-The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(Gwynnda_trash_wheel_df$cigerette_butts)`.  
+The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(Gwynnda_trash_wheel_df_july$cigarette_butts)`.  
 
 ## Problem Three
 
