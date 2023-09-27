@@ -244,10 +244,9 @@ Dataset "mci_amyloid_df" has 6 variables: `r colnames(mci_amyloid_df)`. In this 
 
 ## Join dataset 
 
-```{r}
+```{r EVAL=FALSE}
 baseline_amyloid= merge(mci_baseline_df,mci_amyloid_df, 
              by="study_id")
-baseline_amyloid
 ```
 
 #### Discussion 
