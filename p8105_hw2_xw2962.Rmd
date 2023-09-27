@@ -26,16 +26,28 @@ pols_df =
   mutate(month = recode(month, "-01" = "jan", "-02" = "feb","-03" = "mar","-04" = "apr","-05" = "may","-06" = "jun","-07" = "jul","-08" = "aug","-09" = "sep","-10" = "oct","-11" = "nov","-12" = "dec")) |> 
 # Replace month number with month name 
   mutate(day=recode(day,"-15"="15")) |>
+  mutate(
+   prez_gop=case_match(
+     prez_gop,
+     0~"dem",
+     1~"gop",
+   )) |>
+  mutate(
+   prez_dem=case_match(
+     prez_dem,
+     0~"gop",
+     1~"dem",
+   )) |>
   relocate(year, month,day,prez_gop,prez_dem) |>
   pivot_longer(
    prez_gop:prez_dem,
-   names_to = "president",
-   names_prefix = "prez_"
+   names_to = "president_title",
+   values_to = "president"
    ) |>
-   select(-value)|>
 # Create a president variable taking values gop and dem, and remove prez_dem and prez_gop
-   select(-day)
+   select(-day) |>
 # Remove the day variable
+   select(-president_title)
 pols_df
 ```
 
@@ -180,4 +192,47 @@ Here, we consider "weight_tons","volume_cubic_yards" and "homes_powered" to be k
 The total weight of trash collected by Professor Trash Wheel is `r sum(professor_trash_wheel_df$weight_tons)`. 
 
 The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(Gwynnda_trash_wheel_df$cigerette_butts)`.  
+
+## Problem Three
+
+#### Import, Clean and Tidy Dataset `MCI_baseline.csv`
+
+```{r}
+mci_baseline_df = 
+  read_csv("./data_mci/MCI_baseline.csv") |> 
+  janitor::clean_names() |>
+# Read in dataset 
+  mutate(x1_male_0_female = recode(x1_male_0_female, "1" = "male", "0" = "female")) |>
+  mutate(x1_apoe4_carrier_0_apoe4_non_carrier = recode(x1_apoe4_carrier_0_apoe4_non_carrier, "1" = "carrier", "0" = "non_carrier")) |>
+# Recode sex and APOE4 carrier status
+  drop_na(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period)
+# Remove any participants who do not meet the stated inclusion criteria
+mci_baseline_df 
+```
+
+#### Discussion 
+
+Discuss important steps in the import process and relevant features of the dataset. How many participants were recruited, and of these how many develop MCI? What is the average baseline age? What proportion of women in the study are APOE4 carriers?
+
+Dataset "mci_baseline_df" has 6 variables: `r colnames(mci_baseline_df)`. In this dataset, there are `r nrow(mci_baseline_df)-1` rows or participants. And there are `r ncol(mci_baseline_df)` columns or variables. The average of baseline age is `r mean(mci_baseline_df$age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period)`. `r ncol(mci_baseline_df)`
+
+#### Import, Clean and Tidy Dataset `mci_amyloid.csv`
+
+```{r}
+mci_amyloid_df = 
+  read_csv("./data_mci/mci_amyloid.csv") |> 
+  janitor::clean_names() |>
+# Read in dataset 
+  drop_na()
+# Remove any participants who do not meet the stated inclusion criteria
+mci_amyloid_df 
+```
+
+
+#### Discussion
+Dataset "mci_amyloid_df" has 6 variables: `r colnames(mci_amyloid_df)`. In this dataset, there are `r nrow(mci_amyloid_df)` rows or participants. And there are `r ncol(mci_amyloid_df)` columns or variables.
+
+## Join dataset 
+
+
 
