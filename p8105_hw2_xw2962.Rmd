@@ -81,11 +81,13 @@ snp_df
 unemployment_df = 
   read_csv("./fivethirtyeight_datasets/unemployment.csv") |> 
   janitor::clean_names() |>
+# Read in dataset 
   pivot_longer(
    jan:dec,
    names_to = "month",
    values_to = "unemployment_num"
    ) |>
+# Use pivot_longer function to switch from “wide” to “long” format;
   mutate(year=as.character("year"))
 # mutate year from dbl to character 
 unemployment_df
