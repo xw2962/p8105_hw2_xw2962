@@ -5,18 +5,17 @@ date: "2023-09-26"
 output: github_document
 ---
 
-```{r setup}
+```{r setup, message=FALSE}
 library(tidyverse)
 library(haven)
 library(readxl)
-library(dplyr)
 ```
 
 ## Problem One 
 
 #### Step One: Clean Data in `pols-month.csv`
 
-```{r}
+```{r,message=FALSE}
 pols_df = 
   read_csv("./fivethirtyeight_datasets/pols-month.csv") |> 
   janitor::clean_names() |> 
@@ -54,7 +53,7 @@ pols_df
 
 #### Step Two: Clean Data in `snp.csv`
 
-```{r}
+```{r,message=FALSE}
 snp_df = 
   read_csv("./fivethirtyeight_datasets/snp.csv") |> 
   janitor::clean_names() |> 
@@ -78,7 +77,7 @@ snp_df
 
 #### Step Three: Tidy Data in `unemployment.csv`
 
-```{r}
+```{r, message=FALSE}
 unemployment_df = 
   read_csv("./fivethirtyeight_datasets/unemployment.csv") |> 
   janitor::clean_names() |>
@@ -200,7 +199,7 @@ The total number of cigarette butts collected by Gwynnda in July of 2021 is `r s
 
 #### Import, Clean and Tidy Dataset `MCI_baseline.csv`
 
-```{r}
+```{r, warning=FALSE,message=FALSE}
 mci_baseline_df = 
   read_csv("./data_mci/MCI_baseline.csv") |> 
   janitor::clean_names() |>
@@ -211,14 +210,12 @@ mci_baseline_df =
   mutate(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period=as.numeric(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period)) |>
   filter(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period!=".") |> 
 # Remove any participants who do not meet the stated inclusion criteria
-  rename("study_id" = "x1")
+  rename("study_id" = "x1") 
 
 mci_baseline_df_female=filter(mci_baseline_df,x1_male_0_female=="female" )
 # Filter out participants who are females 
 mci_baseline_df_female_carriers=filter(mci_baseline_df_female,x1_apoe4_carrier_0_apoe4_non_carrier=="carrier")
 # Filter out participants who are females and who have apoe4 carriers 
-mci_baseline_df_female
-mci_baseline_df_female_carriers
 mci_baseline_df
 ```
 
@@ -228,7 +225,7 @@ Dataset "mci_baseline_df" has 6 variables: `r colnames(mci_baseline_df)`. In thi
 
 #### Import, Clean and Tidy Dataset `mci_amyloid.csv`
 
-```{r}
+```{r,message=FALSE}
 mci_amyloid_df = 
   read_csv("./data_mci/mci_amyloid.csv") |> 
   janitor::clean_names() |>
