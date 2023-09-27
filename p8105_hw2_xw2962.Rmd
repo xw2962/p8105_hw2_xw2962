@@ -207,16 +207,19 @@ mci_baseline_df =
   mutate(x1_male_0_female = recode(x1_male_0_female, "1" = "male", "0" = "female")) |>
   mutate(x1_apoe4_carrier_0_apoe4_non_carrier = recode(x1_apoe4_carrier_0_apoe4_non_carrier, "1" = "carrier", "0" = "non_carrier")) |>
 # Recode sex and APOE4 carrier status
-  drop_na(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period)
+  mutate(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period=as.numeric(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period)) |>
+  filter(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period!="." )
 # Remove any participants who do not meet the stated inclusion criteria
 mci_baseline_df 
+mci_baseline_df_female=filter(mci_baseline_df,x1_male_0_female=="female" )
+mci_baseline_df_female_carriers=filter(mci_baseline_df_female,x1_apoe4_carrier_0_apoe4_non_carrier=="carrier")
+mci_baseline_df_female
+mci_baseline_df_female_carriers
 ```
 
 #### Discussion 
 
-Discuss important steps in the import process and relevant features of the dataset. How many participants were recruited, and of these how many develop MCI? What is the average baseline age? What proportion of women in the study are APOE4 carriers?
-
-Dataset "mci_baseline_df" has 6 variables: `r colnames(mci_baseline_df)`. In this dataset, there are `r nrow(mci_baseline_df)-1` rows or participants. And there are `r ncol(mci_baseline_df)` columns or variables. The average of baseline age is `r mean(mci_baseline_df$age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period)`. `r ncol(mci_baseline_df)`
+Dataset "mci_baseline_df" has 6 variables: `r colnames(mci_baseline_df)`. In this dataset, there are 484 participants. And there are `r ncol(mci_baseline_df)` columns or variables. Of these, 97 devlops MCI. The average baseline age is `r mean(mci_baseline_df$age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period)`. `r (nrow(mci_baseline_df_female_carriers))/(nrow(mci_baseline_df_female))` of women in the study are APOE4 carriers.    
 
 #### Import, Clean and Tidy Dataset `mci_amyloid.csv`
 
