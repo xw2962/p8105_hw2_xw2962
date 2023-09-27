@@ -9,6 +9,7 @@ output: github_document
 library(tidyverse)
 library(haven)
 library(readxl)
+library(dplyr)
 ```
 
 ## Problem One 
@@ -208,13 +209,17 @@ mci_baseline_df =
   mutate(x1_apoe4_carrier_0_apoe4_non_carrier = recode(x1_apoe4_carrier_0_apoe4_non_carrier, "1" = "carrier", "0" = "non_carrier")) |>
 # Recode sex and APOE4 carrier status
   mutate(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period=as.numeric(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period)) |>
-  filter(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period!="." )
+  filter(age_at_the_onset_of_mci_missing_if_a_subject_remains_mci_free_during_the_follow_up_period!=".") |> 
 # Remove any participants who do not meet the stated inclusion criteria
-mci_baseline_df 
+  rename("study_id" = "x1")
+
 mci_baseline_df_female=filter(mci_baseline_df,x1_male_0_female=="female" )
+# Filter out participants who are females 
 mci_baseline_df_female_carriers=filter(mci_baseline_df_female,x1_apoe4_carrier_0_apoe4_non_carrier=="carrier")
+# Filter out participants who are females and who have apoe4 carriers 
 mci_baseline_df_female
 mci_baseline_df_female_carriers
+mci_baseline_df
 ```
 
 #### Discussion 
@@ -228,16 +233,32 @@ mci_amyloid_df =
   read_csv("./data_mci/mci_amyloid.csv") |> 
   janitor::clean_names() |>
 # Read in dataset 
-  drop_na()
+  drop_na() 
 # Remove any participants who do not meet the stated inclusion criteria
 mci_amyloid_df 
 ```
 
 
-#### Discussion
+#### Discussion 
 Dataset "mci_amyloid_df" has 6 variables: `r colnames(mci_amyloid_df)`. In this dataset, there are `r nrow(mci_amyloid_df)` rows or participants. And there are `r ncol(mci_amyloid_df)` columns or variables.
 
 ## Join dataset 
+
+```{r}
+baseline_amyloid= merge(mci_baseline_df,mci_amyloid_df, 
+             by="study_id")
+baseline_amyloid
+```
+
+#### Discussion 
+
+Only `r nrow(baseline_amyloid)` participants appear in both the baseline and amyloid datasets. And there are `r ncol(baseline_amyloid)` variables, they are `r colnames(baseline_amyloid)`.
+
+#### Export Result as CSV
+
+```{r}
+write_csv(baseline_amyloid,"baseline_amyloid.csv")
+```
 
 
 
