@@ -118,7 +118,7 @@ The joining dataset "pols_snp_unemployment" has 13 variables: `r colnames(pols_s
 
 ## Problem Two
 
-#### Import, Clean, and Organize the Data for Mr. Trash Wheel
+#### Import, Clean, and Organize the Data for `Mr. Trash Wheel`
 ```{r}
 mr_trash_wheel_df=
   read_excel("./Trash Wheel Data.xlsx",range="A2:N549") |> 
@@ -137,7 +137,7 @@ mr_trash_wheel_df=
 mr_trash_wheel_df
 ```
 
-#### Import, Clean, and Organize the Data for Professor Trash Wheel
+#### Import, Clean, and Organize the Data for `Professor Trash Wheel`
 
 ```{r}
 professor_trash_wheel_df=
@@ -158,7 +158,7 @@ professor_trash_wheel_df=
 professor_trash_wheel_df
 ```
 
-#### Import, Clean, and Organize the Data for Gwynnda Trash Wheel
+#### Import, Clean, and Organize the Data for `Gwynnda Trash Wheel`
 
 ```{r}
 Gwynnda_trash_wheel_df=
@@ -181,7 +181,7 @@ Gwynnda_trash_wheel_df_july
 # Filter out the Gwynnda_trash_wheel data in july 
 ```
 
-#### Combine these with the Mr. Trash Wheel Dataset to Create Single  Tidy Dataset
+#### Combine these with the `Mr. Trash Wheel` Dataset to Create Single  Tidy Dataset
 
 ```{r}
 mr_professor_Gwynnda=
