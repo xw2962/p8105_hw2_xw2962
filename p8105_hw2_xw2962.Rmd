@@ -216,7 +216,12 @@ mci_baseline_df =
 # Remove any participants who do not meet the stated inclusion criteria
   rename("study_id" = "id") 
 
-mci_baseline_df_female=filter(mci_baseline_df,sex=="female" )
+mci_baseline_df_noncleaned = 
+  read_csv("./data_mci/MCI_baseline.csv",skip=1) |> 
+  janitor::clean_names() |>
+  mutate(sex = recode(sex, "1" = "male", "0" = "female"))
+
+mci_baseline_df_female=filter(mci_baseline_df_noncleaned,sex=="female" )
 # Filter out participants who are females 
 mci_baseline_df_female_carriers=filter(mci_baseline_df_female, apoe4=="carrier")
 # Filter out participants who are females and who have apoe4 carriers 
