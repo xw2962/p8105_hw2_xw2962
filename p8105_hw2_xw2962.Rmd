@@ -225,7 +225,7 @@ mci_baseline_df
 
 #### Discussion 
 
-Dataset "mci_baseline_df" has `r ncol(mci_baseline_df)` variables: `r colnames(mci_baseline_df)`. In this dataset, there are 484 participants. Of these, 97 devlops MCI. The average baseline age is `r mean(mci_baseline_df$age_at_onset)`. `r (nrow(mci_baseline_df_female_carriers))/(nrow(mci_baseline_df_female))` of women in the study are APOE4 carriers.    
+Dataset "mci_baseline_df" has `r ncol(mci_baseline_df)` variables: `r colnames(mci_baseline_df)`. In this dataset, there are 484 participants. Of these, 97 devlops MCI. The average baseline age is `r mean(mci_baseline_df$age_at_onset)`. `r ((nrow(mci_baseline_df_female_carriers))/(nrow(mci_baseline_df_female)))*100` % of women in the study are APOE4 carriers.    
 
 #### Import, Clean and Tidy Dataset `mci_amyloid.csv`
 
