@@ -239,19 +239,34 @@ mci_amyloid_df =
   read_csv("./data_mci/mci_amyloid.csv",skip = 1) |> 
   janitor::clean_names() |>
 # Read in dataset 
-  drop_na() 
+  drop_na() |>
 # Remove any participants who do not meet the stated inclusion criteria
+  pivot_longer(
+   baseline:time_8,
+   names_to = "time",
+   values_to = "time_value"
+   ) |>
+# Use pivot_longer function to switch from “wide” to “long” format
+   arrange(time,study_id)
+# Arrange the dataset according to time and study_id
+
+mci_amyloid_df_unpivot= 
+  read_csv("./data_mci/mci_amyloid.csv",skip = 1) |> 
+  janitor::clean_names() |>
+# Read in dataset 
+  drop_na()
+
 mci_amyloid_df 
 ```
 
 
 #### Discussion 
-Dataset "mci_amyloid_df" has 6 variables: `r colnames(mci_amyloid_df)`. In this dataset, there are `r nrow(mci_amyloid_df)` rows or participants. And there are `r ncol(mci_amyloid_df)` columns or variables.
+Dataset "mci_amyloid_df" has `r ncol(mci_amyloid_df)` variables: `r colnames(mci_amyloid_df)`. In this dataset, there are `r nrow(mci_amyloid_df)` rows. 
 
 ## Join dataset 
 
 ```{r EVAL=FALSE}
-baseline_amyloid= merge(mci_baseline_df,mci_amyloid_df, 
+baseline_amyloid= merge(mci_baseline_df,mci_amyloid_df_unpivot, 
              by="study_id")
 ```
 
