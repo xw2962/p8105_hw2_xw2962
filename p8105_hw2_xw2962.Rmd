@@ -105,13 +105,13 @@ pols_snp_unemployment
 
 #### Short Description of Dataset
 
-Dataset "pols_df" has 9 variables: `r colnames(pols_df)`. In this dataset, there are `r nrow(pols_df)` rows. And there are `r ncol(pols_df)` columns. Here we consider variables "gov_gop", "sen_gop", "rep_gop", "gov_dem", "sen_dem", "rep_dem" and "president" to be important for analysis.
+Dataset "pols_df" has `r ncol(pols_df)` variables: `r colnames(pols_df)`. In this dataset, there are `r nrow(pols_df)` rows. And there are `r ncol(pols_df)` columns. Here we consider variables "gov_gop", "sen_gop", "rep_gop", "gov_dem", "sen_dem", "rep_dem" and "president" to be important for analysis.
 
-Dataset "snp_df" has 3 variables: `r colnames(snp_df)`. In this dataset, there are `r nrow(snp_df)` rows. And there are `r ncol(snp_df)` columns. Here we consider variables "close" to be important for analysis.
+Dataset "snp_df" has `r ncol(snp_df)` variables: `r colnames(snp_df)`. In this dataset, there are `r nrow(snp_df)` rows. And there are `r ncol(snp_df)` columns. Here we consider variables "close" to be important for analysis.
 
-Dataset "unemployment_df" has 3 variables: `r colnames(unemployment_df)`. In this dataset, there are `r nrow(unemployment_df)` rows. And there are `r ncol(unemployment_df)` columns. Here we consider variables "unemployment_num" to be important for analysis.
+Dataset "unemployment_df" has `r ncol(unemployment_df)` variables: `r colnames(unemployment_df)`. In this dataset, there are `r nrow(unemployment_df)` rows. And there are `r ncol(unemployment_df)` columns. Here we consider variables "unemployment_num" to be important for analysis.
 
-The joining dataset "pols_snp_unemployment" has `r nrow(pols_snp_unemployment)` variables: `r colnames(pols_snp_unemployment)`. In this dataset, there are `r nrow(pols_snp_unemployment)` rows. And there are `r ncol(pols_snp_unemployment)` columns. Here we consider variables "gov_gop", "sen_gop", "rep_gop", "gov_dem", "sen_dem", "rep_dem", "president","close" and "unemployment_num" to be important for analysis.
+The joining dataset "pols_snp_unemployment" has `r ncol(pols_snp_unemployment)` variables: `r colnames(pols_snp_unemployment)`. In this dataset, there are `r nrow(pols_snp_unemployment)` rows. And there are `r ncol(pols_snp_unemployment)` columns. Here we consider variables "gov_gop", "sen_gop", "rep_gop", "gov_dem", "sen_dem", "rep_dem", "president","close" and "unemployment_num" to be important for analysis.
 
 ## Problem Two
 
