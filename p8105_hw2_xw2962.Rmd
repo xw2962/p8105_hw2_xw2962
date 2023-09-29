@@ -268,16 +268,29 @@ Dataset "mci_amyloid_df" has `r ncol(mci_amyloid_df)` variables: `r colnames(mci
 ```{r EVAL=FALSE}
 baseline_amyloid= merge(mci_baseline_df,mci_amyloid_df_unpivot, 
              by="study_id")
+# Calculate participants appear in both datasets 
+unqiue_baseline=setdiff(mci_baseline_df_noncleaned$id, mci_amyloid_df_unpivot$study_id)
+length(unqiue_baseline)
+unqiue_amyloid=setdiff(mci_amyloid_df_unpivot$study_id, mci_baseline_df_noncleaned$id)
+length(unqiue_amyloid)
+# Calculatethe number of unqiue participants in each datasets. 
+baseline_amyloid_merge= merge(mci_baseline_df,mci_amyloid_df, 
+             by="study_id")
+# Merge two datasets so that only participants who appear in both datasets are retained 
 ```
 
 #### Discussion 
 
-Only `r nrow(baseline_amyloid)` participants appear in both the baseline and amyloid datasets. And there are `r ncol(baseline_amyloid)` variables, they are `r colnames(baseline_amyloid)`.
+There are 146 unqiue partcipants in "MCI_baseline.csv" dataset and there are 10 unique participants in "mci_amyloid.csv" dataset. 
+
+Only `r nrow(baseline_amyloid)` participants appear in both the baseline and amyloid datasets. 
+
+For the resulting merged dataset, there are `r ncol(baseline_amyloid_merge)` variables, they are `r colnames(baseline_amyloid_merge)`.
 
 #### Export Result as CSV
 
 ```{r}
-write_csv(baseline_amyloid,"baseline_amyloid.csv")
+write_csv(baseline_amyloid_merge,"baseline_amyloid_merge.csv")
 ```
 
 
