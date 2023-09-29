@@ -20,12 +20,10 @@ pols_df =
   read_csv("./fivethirtyeight_datasets/pols-month.csv") |> 
   janitor::clean_names() |> 
 # Read in dataset 
-  separate(mon, into = c("year", "month_day"), sep = 4) |>
-  separate(month_day, into = c("month","day"), sep = 3) |>
-# Use separate() to break up the variable mon into integer variables year, month, and day
-  mutate(month = recode(month, "-01" = "jan", "-02" = "feb","-03" = "mar","-04" = "apr","-05" = "may","-06" = "jun","-07" = "jul","-08" = "aug","-09" = "sep","-10" = "oct","-11" = "nov","-12" = "dec")) |> 
+  separate(mon,into=c("year","month","day"),sep="-",convert=TRUE) |>
+# Seperate mon into year, month and day 
+   mutate(month=month.abb[as.numeric(month)]) |>
 # Replace month number with month name 
-  mutate(day=recode(day,"-15"="15")) |>
   mutate(
    prez_gop=case_match(
      prez_gop,
@@ -58,20 +56,22 @@ snp_df =
   read_csv("./fivethirtyeight_datasets/snp.csv") |> 
   janitor::clean_names() |> 
 # Read in dataset 
-  separate(date, into = c("month", "day_year"), sep = 2) |>
-  separate(day_year, into = c("day","year"), sep = 2) |>
+  mutate(date=as.Date(date,format="%m/%d/%y"),
+         date=as.Date(ifelse(date>Sys.Date(),
+                             format(date,"19m-%d-%y"),
+                             format(date)))) |>
+         separate(date,into=c("year","month","day")) |> 
 # Use separate() to break up the variable mon into integer variables year, month, and day
-  mutate(month = recode(month, "1/" = "jan", "2/" = "feb","3/" = "mar","4/" = "apr","5/" = "may","6/" = "jun","7/" = "jul","8/" = "aug","9/" = "sep","10" = "oct","11" = "nov","12" = "dec")) |> 
+   mutate(month=month.abb[as.numeric(month)],
+   year=as.numeric(year)) |>
 # Replace month number with month name
   select(-day) |> 
 # Remove the day variable
   arrange(year, month) |>
 # Arrange according to year and month
-  relocate(year, month) |>
+  relocate(year, month) 
 # Organize so that year and month are the leading columns
-  separate(year, into = c("null", "year"), sep = 1) |>
-  select(-null)
-# Remove prefix "/" in the column "year"
+
 snp_df
 ```
 
@@ -86,10 +86,8 @@ unemployment_df =
    jan:dec,
    names_to = "month",
    values_to = "unemployment_num"
-   ) |>
+   ) 
 # Use pivot_longer function to switch from “wide” to “long” format;
-  mutate(year=as.character("year"))
-# Mutate year from dbl to character 
 unemployment_df
 ```
 
@@ -97,11 +95,10 @@ unemployment_df
 
 ```{r}
 pols_snp = 
-  left_join(pols_df,snp_df,by = "year","month")
-pols_snp
+  left_join(pols_df,snp_df,by = c("year","month"))
 # Join the datasets by merging snp into pols
 pols_snp_unemployment=
-  left_join(pols_snp,unemployment_df,by = "year","month")
+  left_join(pols_snp,unemployment_df,by = c("year","month"))
 # Join unemployment_df to the result dataset from above
 pols_snp_unemployment
 ```
@@ -114,7 +111,7 @@ Dataset "snp_df" has 3 variables: `r colnames(snp_df)`. In this dataset, there a
 
 Dataset "unemployment_df" has 3 variables: `r colnames(unemployment_df)`. In this dataset, there are `r nrow(unemployment_df)` rows. And there are `r ncol(unemployment_df)` columns. Here we consider variables "unemployment_num" to be important for analysis.
 
-The joining dataset "pols_snp_unemployment" has 13 variables: `r colnames(pols_snp_unemployment)`. In this dataset, there are `r nrow(pols_snp_unemployment)` rows. And there are `r ncol(pols_snp_unemployment)` columns. Here we consider variables "gov_gop", "sen_gop", "rep_gop", "gov_dem", "sen_dem", "rep_dem", "president","close" and "unemployment_num" to be important for analysis.
+The joining dataset "pols_snp_unemployment" has `r nrow(pols_snp_unemployment)` variables: `r colnames(pols_snp_unemployment)`. In this dataset, there are `r nrow(pols_snp_unemployment)` rows. And there are `r ncol(pols_snp_unemployment)` columns. Here we consider variables "gov_gop", "sen_gop", "rep_gop", "gov_dem", "sen_dem", "rep_dem", "president","close" and "unemployment_num" to be important for analysis.
 
 ## Problem Two
 
@@ -230,7 +227,7 @@ mci_baseline_df
 
 #### Discussion 
 
-Dataset "mci_baseline_df" has `r ncol(mci_baseline_df)` variables: `r colnames(mci_baseline_df)`. In this dataset, there are `r nrow(mci_baseline_df_noncleaned)` participants. Of these, 97 devlops MCI. The average baseline age is `r mean(mci_baseline_df$age_at_onset)`. `r ((nrow(mci_baseline_df_female_carriers))/(nrow(mci_baseline_df_female)))*100` % of women in the study are APOE4 carriers.    
+Dataset "mci_baseline_df" has `r ncol(mci_baseline_df)` variables: `r colnames(mci_baseline_df)`. In this dataset, there are `r nrow(mci_baseline_df)` participants. Of these, 97 devlops MCI. The average baseline age is `r mean(mci_baseline_df$age_at_onset)`. `r ((nrow(mci_baseline_df_female_carriers))/(nrow(mci_baseline_df_female)))*100` % of women in the study are APOE4 carriers.    
 
 #### Import, Clean and Tidy Dataset `mci_amyloid.csv`
 
