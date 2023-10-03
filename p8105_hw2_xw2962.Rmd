@@ -178,6 +178,11 @@ mr_professor_Gwynnda
 ```
 
 #### Description
+The data "mr_trash_wheel_df" is from the Mr.Trash Wheel sheet from May.2014 to July. 2022, which contains `r colnames(mr_trash_wheel_df)` and the number of observations is `r nrow(mr_trash_wheel_df)`. 
+
+The data "professor_trash_wheel_df" is from the Professor Trash Wheel sheet from January.2017 to July. 2022, which contains `r colnames(professor_trash_wheel_df)` and the number of observations is `r nrow(professor_trash_wheel_df)`. 
+
+The data "Gwynnda_trash_wheel_df" is from the Gwynnda Trash Wheel sheet from July.2021 to July. 2022, which contains `r colnames(Gwynnda_trash_wheel_df)` and the number of observations is `r nrow(Gwynnda_trash_wheel_df)`.
 
 Dataset "mr_professor_Gwynnda" has 15 variables: `r colnames(mr_professor_Gwynnda)`. In this dataset, there are `r nrow(mr_professor_Gwynnda)` rows or observations. And there are `r ncol(mr_professor_Gwynnda)` columns or variables. 
 
