@@ -219,9 +219,13 @@ mci_baseline_df
 ```
 
 #### Discussion 
+We first imported and cleaned the dataset. Then we recoded the "sex" and "APOE4" into meaningful characters. And we removed any participants who do not meet the stated inclusion criteria. 
 
-Dataset "mci_baseline_df" has `r ncol(mci_baseline_df)` variables: `r colnames(mci_baseline_df)`. In this dataset, there are `r nrow(mci_baseline_df_noncleaned)` participants. 
-Of these, `r nrow(mci_baseline_df)` devlops MCI. 
+Dataset "mci_baseline_df" has `r ncol(mci_baseline_df)` variables: `r colnames(mci_baseline_df)`. 
+
+In this dataset, there are `r nrow(mci_baseline_df_noncleaned)` participants. 
+Of these, `r nrow(mci_baseline_df)` devlops MCI eventually. 
+
 The average baseline age is `r mean(mci_baseline_df$age_at_onset)`. 
 `r ((nrow(mci_baseline_df_female_carriers))/(nrow(mci_baseline_df_female)))*100` % of women in the study are APOE4 carriers.    
 
@@ -255,6 +259,8 @@ mci_amyloid_df
 
 
 #### Discussion 
+We first read in the dataset. And then we remove any participants who do not meet the stated inclusion criteria. Next, we use pivot_longer function to switch from “wide” to “long” format. Finally, we arrange the dataset according to time and study_id. 
+
 Dataset "mci_amyloid_df" has `r ncol(mci_amyloid_df)` variables: `r colnames(mci_amyloid_df)`. In this dataset, there are `r nrow(mci_amyloid_df)` rows. 
 
 ## Join dataset 
