@@ -133,8 +133,6 @@ professor_trash_wheel_df=
 # Specify the sheet in the Excel file and to omit non-data entries using arguments in read_excel
   janitor::clean_names() |>  
 # Use reasonable variable names
-  drop_na() |> 
-# Omit rows that do not include dumpster-specific data
   mutate(
     homes_powered = ((weight_tons*500)/30
     )) |> 
@@ -164,7 +162,7 @@ Gwynnda_trash_wheel_df=
 # Add a variable for clear identification
 Gwynnda_trash_wheel_df
 Gwynnda_trash_wheel_df_july=filter(Gwynnda_trash_wheel_df,month=="July" )
-Gwynnda_trash_wheel_df_july
+Gwynnda_trash_wheel_df_july_year=filter(Gwynnda_trash_wheel_df_july,year=="2021")
 # Filter out the Gwynnda_trash_wheel data in july 
 ```
 
@@ -187,7 +185,7 @@ Here, we consider "weight_tons","volume_cubic_yards" and "homes_powered" to be k
 
 The total weight of trash collected by Professor Trash Wheel is `r sum(professor_trash_wheel_df$weight_tons)`. 
 
-The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(Gwynnda_trash_wheel_df_july$cigarette_butts)`.  
+The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(Gwynnda_trash_wheel_df_july_year$cigarette_butts)`.  
 
 ## Problem Three
 
