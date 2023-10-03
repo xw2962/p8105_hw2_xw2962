@@ -16,36 +16,25 @@ library(readxl)
 #### Step One: Clean Data in `pols-month.csv`
 
 ```{r,message=FALSE}
+month_df = 
+  tibble(
+    month_num = 1:12,
+    month_abb = month.abb,
+    month = month.name
+  )
+
 pols_df = 
   read_csv("./fivethirtyeight_datasets/pols-month.csv") |> 
   janitor::clean_names() |> 
 # Read in dataset 
-  separate(mon,into=c("year","month","day"),sep="-",convert=TRUE) |>
-# Seperate mon into year, month and day 
-   mutate(month=month.abb[as.numeric(month)]) |>
-# Replace month number with month name 
+  separate(mon, into = c("year", "month_num", "day"), convert = TRUE) |>
+# seperate month into year, month_num and day. 
   mutate(
-   prez_gop=case_match(
-     prez_gop,
-     0~"dem",
-     1~"gop",
-   )) |>
-  mutate(
-   prez_dem=case_match(
-     prez_dem,
-     0~"gop",
-     1~"dem",
-   )) |>
-  relocate(year, month,day,prez_gop,prez_dem) |>
-  pivot_longer(
-   prez_gop:prez_dem,
-   names_to = "president_title",
-   values_to = "president"
-   ) |>
-# Create a president variable taking values gop and dem, and remove prez_dem and prez_gop
-   select(-day) |>
-# Remove the day variable
-   select(-president_title)
+    president = recode(prez_gop, "0" = "dem", "1" = "gop", "2" = "gop")) |>
+# create a variable called "president" by recoding prez_gop
+  left_join(x = _, y = month_df) |> 
+  select(year, month, everything(), -day, -starts_with("prez")) 
+# arrange table and delete day and columns starts with "prez" 
 pols_df
 ```
 
@@ -95,10 +84,12 @@ unemployment_df
 
 ```{r}
 pols_snp = 
-  left_join(pols_df,snp_df,by = c("year","month"))
+  left_join(pols_df,snp_df,by=c("year","month")) |> 
+  arrange(year,month)
 # Join the datasets by merging snp into pols
 pols_snp_unemployment=
-  left_join(pols_snp,unemployment_df,by = c("year","month"))
+  left_join(pols_snp,unemployment_df,by=c("year","month")) |> 
+  arrange(year,month)
 # Join unemployment_df to the result dataset from above
 pols_snp_unemployment
 ```
@@ -118,7 +109,7 @@ The joining dataset "pols_snp_unemployment" has `r ncol(pols_snp_unemployment)` 
 #### Import, Clean, and Organize the Data for `Mr. Trash Wheel`
 ```{r}
 mr_trash_wheel_df=
-  read_excel("./Trash Wheel Data.xlsx",range="A2:N549") |> 
+  read_excel("./Trash Wheel Collection Data.xlsx",range="A2:N586") |> 
 # Specify the sheet in the Excel file and to omit non-data entries using arguments in read_excel
   janitor::clean_names() |>  
 # Use reasonable variable names
@@ -138,7 +129,7 @@ mr_trash_wheel_df
 
 ```{r}
 professor_trash_wheel_df=
-  read_excel("./Trash Wheel Data.xlsx",2,range="A2:M96") |> 
+  read_excel("./Trash Wheel Collection Data.xlsx",2,range="A2:M108") |> 
 # Specify the sheet in the Excel file and to omit non-data entries using arguments in read_excel
   janitor::clean_names() |>  
 # Use reasonable variable names
@@ -159,17 +150,16 @@ professor_trash_wheel_df
 
 ```{r}
 Gwynnda_trash_wheel_df=
-  read_excel("./Trash Wheel Data.xlsx",4,range="A2:K108") |> 
+  read_excel("./Trash Wheel Collection Data.xlsx",4,range="A2:L157") |> 
 # Specify the sheet in the Excel file and to omit non-data entries using arguments in read_excel
   janitor::clean_names() |>  
 # Use reasonable variable names
-  drop_na() |> 
-# Omit rows that do not include dumpster-specific data
   mutate(
     homes_powered = ((weight_tons*500)/30
     )) |> 
 # Update the data to include a new homes_powered variable based on the noted calculation
   mutate(trash_wheel_name="Gwynnda_trash_wheel") |>
+  mutate(year=as.character(year)) |>
   relocate(trash_wheel_name)
 # Add a variable for clear identification
 Gwynnda_trash_wheel_df
@@ -182,7 +172,10 @@ Gwynnda_trash_wheel_df_july
 
 ```{r}
 mr_professor_Gwynnda=
-  left_join(mr_trash_wheel_df,professor_trash_wheel_df,Gwynnda_trash_wheel_df,by=c("trash_wheel_name","month","dumpster","year","date","weight_tons","volume_cubic_yards","plastic_bottles","polystyrene","cigarette_butts","glass_bottles","grocery_bags","chip_bags","homes_powered"))
+  bind_rows(mr_trash_wheel_df,professor_trash_wheel_df,Gwynnda_trash_wheel_df) |>
+  janitor::clean_names() |>
+  select(trash_wheel_name,everything())
+
 mr_professor_Gwynnda
 ```
 
