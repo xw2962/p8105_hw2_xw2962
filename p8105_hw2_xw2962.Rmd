@@ -208,7 +208,7 @@ mci_baseline_df_noncleaned =
   read_csv("./data_mci/MCI_baseline.csv",skip=1) |> 
   janitor::clean_names() |>
   mutate(sex = recode(sex, "1" = "male", "0" = "female")) |> 
-  mutate(apoe4 = recode(apoe4, "1" = "carrier", "0" = "non_carrier"))
+  mutate(apoe4 = recode(apoe4, "1" = "carrier", "0" = "non_carrier"))  
 
 mci_baseline_df_female=filter(mci_baseline_df_noncleaned,sex=="female" )
 # Filter out participants who are females 
@@ -216,6 +216,7 @@ mci_baseline_df_female_carriers=filter(mci_baseline_df_female,apoe4=="carrier")
 # Filter out participants who are females and who have apoe4 carriers 
 
 mci_baseline_df
+mci_baseline_df_noncleaned
 ```
 
 #### Discussion 
@@ -226,7 +227,7 @@ Dataset "mci_baseline_df" has `r ncol(mci_baseline_df)` variables: `r colnames(m
 In this dataset, there are `r nrow(mci_baseline_df_noncleaned)` participants. 
 Of these, `r nrow(mci_baseline_df)` devlops MCI eventually. 
 
-The average baseline age is `r mean(mci_baseline_df$age_at_onset)`. 
+The average baseline age is `r mean(mci_baseline_df_noncleaned$current_age)`. 
 `r ((nrow(mci_baseline_df_female_carriers))/(nrow(mci_baseline_df_female)))*100` % of women in the study are APOE4 carriers.    
 
 
