@@ -204,24 +204,35 @@ mci_baseline_df =
   mutate(sex = recode(sex, "1" = "male", "0" = "female")) |>
   mutate(apoe4 = recode(apoe4, "1" = "carrier", "0" = "non_carrier")) |>
 # Recode sex and APOE4 carrier status
-  mutate(age_at_onset=as.numeric(age_at_onset)) |>
-  filter(age_at_onset!=".") |> 
-# Remove any participants who do not meet the stated inclusion criteria
+  filter(current_age<age_at_onset|age_at_onset==".") |> 
+# Remove any participants who do not meet the stated inclusion criteria.
   rename("study_id" = "id") 
 
-mci_baseline_df_noncleaned = 
+
+ mci_baseline_df_noncleaned = 
   read_csv("./data_mci/MCI_baseline.csv",skip=1) |> 
   janitor::clean_names() |>
   mutate(sex = recode(sex, "1" = "male", "0" = "female")) |> 
-  mutate(apoe4 = recode(apoe4, "1" = "carrier", "0" = "non_carrier"))  
+  mutate(apoe4 = recode(apoe4, "1" = "carrier", "0" = "non_carrier")) |>
+  rename("study_id" = "id")
+ 
+mci_baseline_df_develop=
+  read_csv("./data_mci/MCI_baseline.csv",skip=1) |> 
+  janitor::clean_names() |>
+# Read in dataset 
+  mutate(sex = recode(sex, "1" = "male", "0" = "female")) |>
+  mutate(apoe4 = recode(apoe4, "1" = "carrier", "0" = "non_carrier")) |>
+# Recode sex and APOE4 carrier status
+  filter(current_age<age_at_onset) |> 
+# Remove any participants who do not meet the stated inclusion criteria and filter out whose value is "."
+  rename("study_id" = "id") 
 
-mci_baseline_df_female=filter(mci_baseline_df_noncleaned,sex=="female" )
+mci_baseline_df_female=filter(mci_baseline_df,sex=="female" )
 # Filter out participants who are females 
 mci_baseline_df_female_carriers=filter(mci_baseline_df_female,apoe4=="carrier")
 # Filter out participants who are females and who have apoe4 carriers 
 
 mci_baseline_df
-mci_baseline_df_noncleaned
 ```
 
 #### Discussion 
@@ -230,7 +241,7 @@ We first imported and cleaned the dataset. Then we recoded the "sex" and "APOE4"
 Dataset "mci_baseline_df" has `r ncol(mci_baseline_df)` variables: `r colnames(mci_baseline_df)`. 
 
 In this dataset, there are `r nrow(mci_baseline_df_noncleaned)` participants. 
-Of these, `r nrow(mci_baseline_df)` devlops MCI eventually. 
+Of these, `r nrow(mci_baseline_df_develop)` devlops MCI eventually. 
 
 The average baseline age is `r mean(mci_baseline_df_noncleaned$current_age)`. 
 `r ((nrow(mci_baseline_df_female_carriers))/(nrow(mci_baseline_df_female)))*100` % of women in the study are APOE4 carriers.    
@@ -249,47 +260,42 @@ mci_amyloid_df =
    values_to = "time_value"
    ) |>
 # Use pivot_longer function to switch from “wide” to “long” format
-   arrange(time,study_id) |>
+   arrange(time,study_id) 
 # Arrange the dataset according to time and study_id
-   drop_na() |>
-# Remove any participants who do not meet the stated inclusion criteria
-  filter(time_value!="Na" )
-# Remove any values in the time_value that are "Na"
 
 mci_amyloid_df_unpivot= 
   read_csv("./data_mci/mci_amyloid.csv",skip = 1) |> 
-  janitor::clean_names() |>
+  janitor::clean_names() 
 # Read in dataset 
-  drop_na()
-
+ 
 mci_amyloid_df 
 ```
 
 
 #### Discussion 
-We first read in the dataset. And then we remove any participants who do not meet the stated inclusion criteria. Next, we use pivot_longer function to switch from “wide” to “long” format. Finally, we arrange the dataset according to time and study_id. 
+We first read in the dataset. And then we use pivot_longer function to switch from “wide” to “long” format. Finally, we arrange the dataset according to time and study_id. 
 
 Dataset "mci_amyloid_df" has `r ncol(mci_amyloid_df)` variables: `r colnames(mci_amyloid_df)`. In this dataset, there are `r nrow(mci_amyloid_df)` rows. 
 
 ## Join dataset 
 
 ```{r EVAL=FALSE}
-baseline_amyloid= merge(mci_baseline_df,mci_amyloid_df_unpivot, 
+baseline_amyloid= inner_join(mci_baseline_df,mci_amyloid_df_unpivot, 
              by="study_id")
 # Calculate participants appear in both datasets 
-unqiue_baseline=setdiff(mci_baseline_df_noncleaned$id, mci_amyloid_df_unpivot$study_id)
+unqiue_baseline=setdiff(mci_baseline_df$study_id, mci_amyloid_df_unpivot$study_id)
 length(unqiue_baseline)
-unqiue_amyloid=setdiff(mci_amyloid_df_unpivot$study_id, mci_baseline_df_noncleaned$id)
+unqiue_amyloid=setdiff(mci_amyloid_df_unpivot$study_id, mci_baseline_df$study_id)
 length(unqiue_amyloid)
 # Calculatethe number of unqiue participants in each datasets. 
-baseline_amyloid_merge= merge(mci_baseline_df,mci_amyloid_df, 
+baseline_amyloid_merge= inner_join(mci_baseline_df,mci_amyloid_df, 
              by="study_id")
-# Merge two datasets so that only participants who appear in both datasets are retained 
+# Merge two datasets so that only participants who appear in both datasets are retained
 ```
 
 #### Discussion 
 
-There are 146 unqiue partcipants in "MCI_baseline.csv" dataset and there are 10 unique participants in "mci_amyloid.csv" dataset. 
+There are 8 unqiue partcipants in "MCI_baseline.csv" dataset and there are 16 unique participants in "mci_amyloid.csv" dataset. 
 
 Only `r nrow(baseline_amyloid)` participants appear in both the baseline and amyloid datasets. 
 
