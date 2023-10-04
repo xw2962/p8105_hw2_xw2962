@@ -42,41 +42,32 @@ pols_df
 
 ```{r,message=FALSE}
 snp_df = 
-  read_csv("./fivethirtyeight_datasets/snp.csv") |> 
-  janitor::clean_names() |> 
-# Read in dataset 
-  mutate(date=as.Date(date,format="%m/%d/%y"),
-         date=as.Date(ifelse(date>Sys.Date(),
-                             format(date,"19y-%m-%d"),
-                             format(date)))) |>
-         separate(date,into=c("year","month","day")) |> 
+  read_csv("./fivethirtyeight_datasets/snp.csv",
+  col_types = cols(date = col_date(format = "%m/%d/%y"))) |>
+  separate(date, into = c("year", "month_num", "day"), convert = TRUE) |>
 # Use separate() to break up the variable mon into integer variables year, month, and day
-   mutate(month=month.abb[as.numeric(month)],
-   year=as.numeric(year)) |>
-# Replace month number with month name
-  select(-day) |> 
-# Remove the day variable
-  arrange(year, month) |>
-# Arrange according to year and month
-  relocate(year, month) 
-# Organize so that year and month are the leading columns
-
+  mutate(
+    year = if_else(year > 2023, year - 100, year)) |> 
+# year > 2023 is "fail" and should follow "year - 100"; ifesle is "pass" and should give "year" directly
+  left_join(x = _, y = month_df) |> 
+  select(year, month, close) 
 snp_df
 ```
 
 #### Step Three: Tidy Data in `unemployment.csv`
 
 ```{r, message=FALSE}
-unemployment_df = 
-  read_csv("./fivethirtyeight_datasets/unemployment.csv") |> 
-  janitor::clean_names() |>
-# Read in dataset 
+unemployment_df= 
+  read_csv("./fivethirtyeight_datasets/unemployment.csv") |>
+  rename(year = Year) |>
   pivot_longer(
-   jan:dec,
-   names_to = "month",
-   values_to = "unemployment_num"
-   ) 
-# Use pivot_longer function to switch from “wide” to “long” format;
+    Jan:Dec, 
+    names_to = "month_abb",
+    values_to = "unemployment"
+  ) |> 
+  left_join(x = _, y = month_df) |> 
+  select(year, month, unemployment)
+
 unemployment_df
 ```
 
@@ -89,7 +80,8 @@ pols_snp =
 # Join the datasets by merging snp into pols
 pols_snp_unemployment=
   left_join(pols_snp,unemployment_df,by=c("year","month")) |> 
-  arrange(year,month)
+  arrange(year,month) |>
+  select(year, month, everything(), -month_num, -month_abb) 
 # Join unemployment_df to the result dataset from above
 pols_snp_unemployment
 ```
