@@ -200,7 +200,6 @@ mci_baseline_df =
 # Remove any participants who do not meet the stated inclusion criteria.
   rename("study_id" = "id") 
 
-
  mci_baseline_df_noncleaned = 
   read_csv("./data_mci/MCI_baseline.csv",skip=1) |> 
   janitor::clean_names() |>
@@ -232,7 +231,7 @@ We first imported and cleaned the dataset. Then we recoded the "sex" and "APOE4"
 
 Dataset "mci_baseline_df" has `r ncol(mci_baseline_df)` variables: `r colnames(mci_baseline_df)`. 
 
-In this dataset, there are `r nrow(mci_baseline_df_noncleaned)` participants. 
+In this dataset, there are `r nrow(mci_baseline_df)` participants. 
 Of these, `r nrow(mci_baseline_df_develop)` devlops MCI eventually. 
 
 The average baseline age is `r mean(mci_baseline_df_noncleaned$current_age)`. 
